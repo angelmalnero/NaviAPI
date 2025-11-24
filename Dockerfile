@@ -1,6 +1,6 @@
 # 1. IMAGEN BASE
 # Usamos una imagen de OpenJDK ligera (slim) con la versión 17 de Java, que es común para Spring Boot.
-FROM openjdk:21-jdk-slim
+FROM eclipse-temurin:17-jre-alpine
 
 # 2. DEFINIR VARIABLES DE ENTORNO
 # Define el puerto que la aplicación escuchará (el puerto por defecto de Spring Boot).
