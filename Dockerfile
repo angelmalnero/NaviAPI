@@ -12,7 +12,7 @@ EXPOSE 8080
 # Reemplaza 'nombre-de-tu-artefacto-version.jar' por el nombre real de tu archivo JAR.
 # Usa el comodín (*) si no recuerdas la versión exacta.
 ARG JAR_FILE=target/*.jar
-COPY NavidadAPI-0.0.1-SNAPSHOT.jar
+COPY target/NavidadAPI-0.0.1-SNAPSHOT.jar app.jar
 
 # 4. PUNTO DE ENTRADA
 # Esta es la instrucción que se ejecutará al iniciar el contenedor.
