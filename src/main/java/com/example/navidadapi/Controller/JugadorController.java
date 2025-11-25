@@ -68,7 +68,7 @@ public class JugadorController {
         if (jugador != null) {
             jugador.setFin(LocalDateTime.now());
             if (jugador.getInicio() != null) {
-                long tiempoTotal = Duration.between(jugador.getInicio(), jugador.getFin()).toMinutes();
+                long tiempoTotal = Duration.between(jugador.getInicio(), jugador.getFin()).toSeconds();
                 jugador.setTotalTiempo(tiempoTotal);
             }
             guardarJugadorEnRanking(jugador);
