@@ -1,4 +1,4 @@
-package com.example.navidadapi.Config;
+package com.example.navidadapi.Config; // Usa el paquete que corresponda
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -9,14 +9,9 @@ public class CorsConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        // Aplica CORS a todas las rutas de la aplicación (/**)
-        registry.addMapping("/**")
-                // Permite solicitudes desde cualquier origen.
-                // Para producción, reemplaza "*" con los dominios específicos de tu frontend.
-                .allowedOrigins("*")
-                // Define qué métodos HTTP están permitidos
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                // Permite el uso de credenciales (cookies, headers de autenticación)
-                .allowCredentials(true);
+        registry.addMapping("/**") // Aplica a todos los endpoints de la API
+                .allowedOrigins("*") // ⚠️ Permite CUALQUIER origen. Para producción, cámbialo al dominio de tu cliente.
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Permite todos los métodos necesarios
+                .allowedHeaders("*"); // Permite todos los headers
     }
 }
