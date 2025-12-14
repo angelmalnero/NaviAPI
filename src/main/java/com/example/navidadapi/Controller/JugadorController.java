@@ -47,17 +47,40 @@ public class JugadorController {
 
         switch (codigoQR) {
             case "agua":
-                return "Antes de ser famoso, no me llamaba Java. Mi primer nombre fue Oak.";
-            case "extintor":
-                return "Soy el lenguaje con el que se programó la versión original de Minecraft.";
-            case "cocacola":
-                return "Mi mascota es una criatura negra con forma de gota llamada Duke.";
-            case "baños":
-                return "Soy la base principal con la que se construyó el sistema operativo Android.";
-            case "sillas":
-                return "Java se ejecuta en más de 3 mil millones de dispositivos.";
+                return "Con eso el trineo ya no quedara en cenizas.";
+            case "cafe":
+                return "¿Sabias que el logo de Java es una taza de café? aunque tambien ayuda a Papa Noel a mantenerse despierto.";
+            case "baston":
+                return "Sin eso Papa Noel no puede caminar bien.";
+            case "caja de herramientas":
+                return "Menos mal, lo necesitabamos para arreglar el trineo.";
+            case "gafas":
+                return "Sin eso Papa Noel no puede ver bien.";
             default:
                 return "Este no es el QR que buscas, sigue buscando.";
+        }
+    }
+
+    private void guardarRankingCompleto(Jugador jugadorFinalizado) {
+        List<Jugador> rankingCompleto = new ArrayList<>();
+        File file = new File(RUTA_FICHERO);
+
+        try {
+            if (file.exists()) {
+                Jugador[] jugadoresArray = objectMapper.readValue(file, Jugador[].class);
+                rankingCompleto.addAll(Arrays.asList(jugadoresArray));
+            }
+            rankingCompleto.add(jugadorFinalizado);
+            Map<String, Jugador> jugadoresUnicos = rankingCompleto.stream()
+                    .collect(Collectors.toMap(
+                            Jugador::getNombre,
+                            j -> j,
+                            (existing, replacement) ->
+                                    replacement.getTotalTiempo() < existing.getTotalTiempo() ? replacement : existing
+                    ));
+            objectMapper.writeValue(file, jugadoresUnicos.values());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -71,26 +94,29 @@ public class JugadorController {
                 long tiempoTotal = Duration.between(jugador.getInicio(), jugador.getFin()).toSeconds();
                 jugador.setTotalTiempo(tiempoTotal);
             }
-            guardarJugadorEnRanking(jugador);
+            guardarRankingCompleto(jugador);
             return jugador;
         }
         return null;
     }
 
-    private void guardarJugadorEnRanking(Jugador jugador) {
-        try {
-            List<Jugador> lista = new ArrayList<>(memoria.values());
-            objectMapper.writeValue(new File(RUTA_FICHERO), lista);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+
 
     @GetMapping("/Ranking")
     public List<Jugador> ranking() {
-        return memoria.values().stream()
-                .filter(l -> l.getTotalTiempo() != null)
-                .sorted(Comparator.comparingLong(Jugador::getTotalTiempo))
-                .collect(Collectors.toList());
+        try {
+            File file = new File(RUTA_FICHERO);
+            if (!file.exists()) {
+                return new ArrayList<>();
+            }
+            Jugador[] jugadoresArray = objectMapper.readValue(file, Jugador[].class);
+            List<Jugador> jugadoresList = Arrays.asList(jugadoresArray);
+            return jugadoresList.stream()
+                    .sorted(Comparator.comparingLong(Jugador::getTotalTiempo))
+                    .collect(Collectors.toList());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
     }
 }
