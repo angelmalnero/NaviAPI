@@ -1,6 +1,6 @@
 # 1. ETAPA DE CONSTRUCCIÓN (Build Stage)
 # Usa una imagen que tiene Java 17/21 y Maven para compilar.
-FROM maven:3.8.5-openjdk-17 AS build
+FROM maven:latest AS build
 
 # Establece el directorio de trabajo
 WORKDIR /app
