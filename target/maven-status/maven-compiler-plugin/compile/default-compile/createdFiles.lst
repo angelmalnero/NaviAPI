@@ -1,4 +1,0 @@
-com\example\navidadapi\NavidadApiApplication.class
-com\example\navidadapi\Config\CorsConfig.class
-com\example\navidadapi\Model\Jugador.class
-com\example\navidadapi\Controller\JugadorController.class
