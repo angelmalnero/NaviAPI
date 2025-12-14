@@ -1,20 +1,26 @@
-# 1. IMAGEN BASE
-# Usamos una imagen de OpenJDK ligera (slim) con la versión 17 de Java, que es común para Spring Boot.
+# 1. ETAPA DE CONSTRUCCIÓN (Build Stage)
+# Usa una imagen que tiene Java 17/21 y Maven para compilar.
+FROM maven:3.8.5-openjdk-17 AS build
+
+# Establece el directorio de trabajo
+WORKDIR /app
+
+# Copia todo el código fuente del proyecto
+COPY . /app
+
+# COMPILACIÓN: Ejecuta Maven para generar el JAR (el "snapshot")
+# ESTO CREA el archivo NavidadAPI-0.0.1-SNAPSHOT.jar en /app/target/
+RUN mvn clean package -DskipTests
+
+# ----------------------------------------------------------------------
+
+# 2. ETAPA DE EJECUCIÓN (Runtime Stage)
+# Usa una imagen base ligera para ejecutar solo el JAR.
 FROM eclipse-temurin:21-jre-alpine
 
-# 2. DEFINIR VARIABLES DE ENTORNO
-# Define el puerto que la aplicación escuchará (el puerto por defecto de Spring Boot).
-ENV SERVER_PORT 8080
+# Copia solo el JAR compilado de la etapa anterior a la etapa final
+COPY --from=build /app/target/*.jar /app.jar
+
+# Define el puerto y el punto de entrada
 EXPOSE 8080
-
-# 3. COPIAR EL ARCHIVO JAR
-# El archivo JAR ejecutable se crea en la carpeta 'target/' cuando ejecutas 'mvn package'.
-# Reemplaza 'nombre-de-tu-artefacto-version.jar' por el nombre real de tu archivo JAR.
-# Usa el comodín (*) si no recuerdas la versión exacta.
-ARG JAR_FILE=target/*.jar
-COPY target/NavidadAPI-0.0.1-SNAPSHOT.jar app.jar
-
-# 4. PUNTO DE ENTRADA
-# Esta es la instrucción que se ejecutará al iniciar el contenedor.
-# Inicia la JVM y ejecuta el archivo JAR.
 ENTRYPOINT ["java", "-jar", "/app.jar"]
